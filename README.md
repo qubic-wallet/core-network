@@ -48,7 +48,7 @@ If you are deploying rather than experimenting, build once on a machine with the
 binary, and read `doc/protocol.md` before pointing the node at a network. Reprovisioning a node is a
 different job from compiling one, and the documentation separates them.
 
-## Who it is for
+## Who it is for?
 
 - Node operators who want to run their own view of the network instead of trusting someone else's.
 - Protocol readers who want the truth about a message rather than its summary.
